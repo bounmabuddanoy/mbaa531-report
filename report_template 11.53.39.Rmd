@@ -1,0 +1,214 @@
+---
+pagetitle: "Experience and Education Are Strongly Linked to Salary"
+output:
+  html_document:
+    theme: null
+    highlight: null
+    mathjax: null
+    css: report.css
+    includes:
+      after_body: report_scroll.html
+knit: (function(input, ...) rmarkdown::render(
+    input, output_file = "index.html"))
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo      = FALSE,
+  message   = FALSE,
+  warning   = FALSE,
+  fig.width  = 6,
+  fig.height = 3.5,
+  dpi        = 150,
+  out.width  = "100%"
+)
+library(dplyr)
+library(ggplot2)
+library(ggridges)
+
+df <- readRDS("../data/test4_dataset.rds")
+```
+
+<div class="report-wrap">
+
+<!-- ── HEADER ──────────────────────────────────── -->
+<!-- Edit the kicker, headline, deck, and byline.  -->
+<!-- Do not change the class names or HTML tags.   -->
+
+<header class="report-header fade-in">
+  <p class="report-kicker">
+    Data Analysis &middot; MBAA 531
+  </p>
+  <h1 class="report-headline">
+  Experience and Education Are Strongly Linked to Salary
+</h1>
+  <p class="report-deck">
+  Workers with more experience and higher educational
+  attainment generally earn higher salaries, although
+  substantial variation remains within groups.
+</p>
+  <p class="report-byline">
+  By <strong>Bounma Buddanoy</strong> &middot;
+  Dataset: talent_market
+</p>
+</header>
+
+
+<!-- ── SECTION 1: THE DATA ─────────────────────── -->
+
+::: {.report-section .fade-in}
+
+## The Data
+
+The talent_market dataset contains 23,876 observations and 10 variables describing workers across different industries and occupations. Variables include annual salary, years of experience, education level, company size, certifications, skills, and industry classifications.
+
+This dataset is valuable because it allows relationships between employee characteristics and compensation to be explored. By examining factors such as experience, education, and skills, we can better understand what influences salary outcomes and how earnings vary across the workforce. These insights may be useful for employees planning their careers and organizations making compensation decisions.
+
+:::
+
+
+<!-- ── SECTION 2: THE CENTRAL FINDING ─────────── -->
+
+::: {.report-section .fade-in}
+
+## The Central Finding
+
+A derived variable called salary_per_skill was created by dividing annual salary by the number of recorded skills. This measure provides a standardized way to compare compensation across workers with different skill counts. The statistic below summarizes the typical amount of salary associated with each recorded skill.
+
+<!-- Edit the number and label text only.          -->
+<!-- Do not change the class names or HTML tags.   -->
+
+<div class="pull-stat fade-in">
+  <span class="stat-number">14,468</span>
+  <span class="stat-label">
+    Typical employees earn about $14,468 per recorded skill unit.
+  </span>
+</div>
+
+The median salary_per_skill value is 14,468 USD per recorded skill. Using the median reduces the influence of unusually high salaries and provides a better representation of a typical employee. Higher values indicate greater compensation relative to skill count, while lower values suggest workers receive less salary for each recorded skill. This measure helps compare compensation across individuals with different backgrounds and experience levels.
+
+:::
+
+
+<!-- ── SECTION 3: SCATTER CHART ───────────────── -->
+
+::: {.report-section .fade-in}
+
+## A Closer Look
+
+Experience is often considered one of the strongest predictors of salary. Employees who spend more time developing their careers typically gain knowledge, responsibility, and specialized expertise that may increase their earning potential. The scatter plot below examines whether higher levels of experience are associated with higher annual salaries and whether this relationship appears consistent across workers.
+
+<div class="chart-wrap">
+
+```{r scatter}
+ggplot(df, aes(x = experience_yrs, y = salary_usd)) +
+  geom_point(
+    alpha  = 0.35,
+    size   = 1.4,
+    colour = "#c0392b"
+  ) +
+  labs(
+    title = NULL,
+    x = "Years of Experience",
+    y = "Annual Salary (USD)"
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_line(
+      colour = "#eeeeee"
+    ),
+    axis.text = element_text(colour = "#555")
+  )
+```
+
+<p class="chart-caption">
+  Chart 1: Relationship between years of experience and annual salary (USD) across 23,876 workers.
+</p>
+</div>
+
+The chart shows a clear positive relationship between experience and salary. Average earnings rise as years of experience increase, supporting the idea that accumulated human capital is rewarded in the labour market. However, the wide vertical spread at most experience levels suggests that factors such as education, industry, and skill specialization also influence compensation.
+:::
+
+
+<!-- ── SECTION 4: RIDGE CHART ─────────────────── -->
+
+::: {.report-section .fade-in}
+
+## Across Groups
+
+Education level was selected as the grouping variable because educational attainment is often associated with differences in earning potential. Higher levels of education typically provide specialized knowledge and qualifications that can increase access to higher-paying occupations. The ridge plot examines the distribution of annual salaries across education groups to determine whether higher educational attainment is associated with higher salary levels and whether salary distributions overlap between groups.
+
+<div class="chart-wrap">
+
+```{r ridge}
+ggplot(
+  df,
+  aes(
+    x = salary_usd,
+    y = education,
+    fill = education
+  )
+) +
+  geom_density_ridges(
+    alpha = 0.6,
+    colour = "white",
+    linewidth = 0.4
+  ) +
+  scale_x_continuous(labels = scales::comma) +
+  labs(
+    title = NULL,
+    x = "Annual Salary (USD)",
+    y = "Education Level"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "none",
+    panel.grid.minor = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.major.x = element_line(colour = "#eeeeee"),
+    axis.text = element_text(colour = "#555")
+   ) 
+```
+<p class="chart-caption">
+  Chart 2: Distribution of annual salary (USD) across education   levels.
+</p>
+</div>
+
+The salary distributions generally shift toward higher values as education level increases. Individuals with Master's and PhD degrees tend to have higher salary concentrations than those with High School or Diploma credentials. However, the substantial overlap among distributions indicates that education is only one factor influencing earnings, with experience, industry, and occupational specialization also contributing to salary outcomes.
+:::
+
+
+<!-- ── CONCLUSION ──────────────────────────────── -->
+
+::: {.report-section .fade-in}
+
+## What This Means
+
+The findings support the headline claim that both experience and education are positively associated with salary outcomes. The scatter plot demonstrated a clear upward trend between years of experience and annual earnings, while the ridge plot showed that salary distributions generally shift toward higher values as educational attainment increases. Together, these visualizations suggest that workers who invest in both experience and education tend to have greater earning potential.
+
+For decision-makers, the results highlight the importance of human capital development. Organizations seeking to attract and retain talent should recognize that education and experience contribute to employee value and compensation expectations. At the same time, the substantial overlap among salary distributions indicates that these factors do not fully explain earnings differences.
+
+One important unanswered question is how other variables such as industry, job role, geographic location, and specialized skills influence salary. Future analysis incorporating these factors would provide a more complete understanding of what drives compensation outcomes.
+:::
+
+
+<!-- ── FOOTER ──────────────────────────────────── -->
+
+<footer class="report-footer">
+  <p>
+    Published via GitHub Pages ·
+    MBAA 531 Data Analytics ·
+    Vancouver Island University
+  </p>
+  
+  <p>
+    Author: Bounma Buddanoy
+<a href="https://github.com/bounmabuddanoy/mbaa531-report">
+https://github.com/bounmabuddanoy/mbaa531-report
+</a>
+  </p>
+</footer>
+
+</div><!-- end .report-wrap -->
